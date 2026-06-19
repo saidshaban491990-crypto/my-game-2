@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي المعادن ومصادر الطاقة - أ. سعيد شعبان</title>
+    <style>
+        :root { 
+            --primary: #1e3a8a; --accent: #d4af37; --success: #059669; 
+            --danger: #dc2626; --bg: #f0f4f8; 
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: #cbd5e1; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; flex-direction: column; padding: 15px; }
+        
+        .stages-nav { 
+            display: flex; width: 100%; max-width: 900px; background: white; 
+            border-radius: 15px; margin-bottom: 15px; border: 3px solid var(--primary);
+            overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        .stage-item { 
+            flex: 1; padding: 15px 5px; font-size: 13px; font-weight: bold; text-align: center;
+            color: #475569; border-left: 1px solid #e2e8f0; transition: all 0.4s ease;
+        }
+        .stage-item.current { background: var(--accent); color: #1e3a8a; }
+        .stage-item.done { background: var(--primary); color: white; opacity: 0.9; }
+
+        .main-card { width: 100%; max-width: 900px; background: white; border-radius: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); border: 4px solid var(--primary); overflow: hidden; position: relative; }
+        .top-nav-bar { background: linear-gradient(135deg, var(--primary), #1e40af); color: white; padding: 20px; text-align: center; border-bottom: 4px solid var(--accent); }
+        .section-label { font-size: 24px; font-weight: 900; margin: 0; }
+        
+        .content { padding: 40px; text-align: center; min-height: 450px; }
+        .teacher-img { width: 120px; height: 120px; border-radius: 50%; border: 5px solid var(--accent); object-fit: cover; }
+        .intro-name { font-size: 26px; font-weight: 900; color: var(--primary); margin: 5px 0; }
+        
+        .q-card { background: var(--bg); border-radius: 25px; padding: 35px; margin-bottom: 30px; border: 2px dashed var(--primary); min-height: 160px; display: flex; align-items: center; justify-content: center; }
+        .q-text { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1.7; }
+        
+        .btn-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media(min-width: 600px) {
+            .btn-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .btn-opt { background: white; border: 3px solid #e2e8f0; padding: 20px; border-radius: 20px; font-size: 20px; font-weight: 800; cursor: pointer; transition: 0.3s; color: var(--primary); text-align: right; }
+        .btn-opt:hover { border-color: var(--accent); background: #f8fafc; }
+        .correct { background: var(--success) !important; color: white !important; border-color: var(--success) !important; }
+        .wrong { background: var(--danger) !important; color: white !important; border-color: var(--danger) !important; }
+        
+        input { width: 100%; max-width: 450px; padding: 18px; border-radius: 15px; border: 3px solid #cbd5e1; text-align: center; font-size: 22px; margin-bottom: 25px; outline: none; }
+        input:focus { border-color: var(--primary); }
+        .btn-main { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border: none; padding: 20px 70px; border-radius: 20px; font-size: 26px; font-weight: 900; cursor: pointer; transition: 0.3s; }
+        .btn-main:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        
+        .footer-identity { background: #f8fafc; padding: 15px; border-top: 3px solid var(--accent); color: var(--primary); font-weight: 800; font-size: 18px; display: flex; justify-content: center; align-items: center; gap: 20px; }
+
+        .screen { display: none; }
+        .active-screen { display: block; }
+        #feedback { display: none; margin-top: 20px; padding: 15px; border-radius: 15px; font-weight: bold; background: #ecfdf5; color: #065f46; font-size: 18px; border-right: 8px solid var(--success); text-align: right; }
+    </style>
+</head>
+<body>
+
+    <div class="stages-nav" id="stagesNav" style="display:none;">
+        <div class="stage-item">صواب وخطأ</div>
+        <div class="stage-item">بم تفسر؟</div>
+        <div class="stage-item">ما النتائج؟</div>
+        <div class="stage-item">ما المقصود؟</div>
+        <div class="stage-item">أكمل الفراغ</div>
+    </div>
+
+    <audio id="sCor" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" preload="auto"></audio>
+    <audio id="sErr" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3" preload="auto"></audio>
+    <audio id="vCor" src="https://archive.org/download/correct_202604/correct.mp3" preload="auto"></audio>
+    <audio id="vErr" src="https://archive.org/download/correct_202604/wrong.mp3" preload="auto"></audio>
+
+    <div class="main-card">
+        <div class="top-nav-bar"><p class="section-label">تحدي المعادن ومصادر الطاقة في قارتي آسيا وأوروبا ⚡</p></div>
+        <div class="content">
+            <div id="scr-1" class="screen active-screen">
+                <img src="https://i.ibb.co/gKFwNMZ/image.png" class="teacher-img">
+                <p class="intro-name">أ. سعيد شعبان</p>
+                <input type="text" id="uName" placeholder="أدخل اسمك الثلاثي المعتمد...">
+                <button id="startBtn" class="btn-main">ابدأ التحدي الآن 🏆</button>
+            </div>
+
+            <div id="scr-2" class="screen">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: bold; color: var(--primary); font-size: 20px;">
+                    <div id="q-count">السؤال: 1 / 50</div>
+                    <div id="s-val">النقاط: 0</div>
+                </div>
+                <div class="q-card"><div id="qText" class="q-text"></div></div>
+                <div id="feedback"></div>
+                <div class="btn-grid" id="options"></div>
+            </div>
+
+            <div id="scr-3" class="screen">
+                <h2 style="color: var(--accent); font-size: 35px;">تم التحدي بنجاح!</h2>
+                <div id="fName" style="font-size:26px; font-weight:bold;"></div>
+                <div id="fScore" style="font-size:80px; font-weight:900; color:var(--primary); margin: 20px 0;"></div>
+                <div id="motivationMsg"></div>
+                <p id="sendingMsg" style="color:var(--primary); font-weight:bold;">جاري حفظ النتيجة في لوحة الشرف...</p>
+                <button class="btn-main" onclick="location.reload()">مرة أخرى 🔄</button>
+            </div>
+        </div>
+        <div class="footer-identity"><span>إعداد وتصميم: أ. سعيد شعبان</span> | <span>📞 01551625493</span></div>
+    </div>
+
+<script>
+let score = 0, cur = 0, uName = "", startTime;
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYnfNGajC14O8YDBVStJylmj-E6azdRUrigPdivddLXjQrb8dKJSK53_rEonzZh-wM8w/exec"; 
+const sCor = document.getElementById('sCor'), sErr = document.getElementById('sErr'), vCor = document.getElementById('vCor'), vErr = document.getElementById('vErr');
+
+const stageBoundaries = [11, 22, 33, 38, 50]; 
+const quiz = [
+    // أولاً: 11 سؤال صواب أو خطأ
+    {q: "تعتبر قارة آسيا أولى قارات العالم إنتاجاً لمعدن البوكسيت.", opts: ["صواب ✔", "خطأ ✘"], ans: 0, fb: "صواب"},
+    {q: "تقع دولة النرويج في المركز الأول أوروبياً في إنتاج الغاز الطبيعي.", opts: ["صواب ✔", "خطأ ✘"], ans: 0, fb: "صواب"},
+    {q: "يُعد معدن النيكل المادة الأساسية والوحيدة لصناعة الألومنيوم.", opts: ["صواب ✔", "خطأ ✘"], ans: 1, fb: "خطأ - التصحيح: البوكسيت"},
+    {q: "تحتل كازاخستان المركز الأول عالمياً في إنتاج معدن اليورانيوم.", opts: ["صواب ✔", "خطأ ✘"], ans: 0, fb: "صواب"},
+    {q: "تتصدر ألمانيا دول العالم في إنتاج طاقة الرياح والطاقة الشمسية.", opts: ["صواب ✔", "خطأ ✘"], ans: 1, fb: "خطأ - التصحيح: الصين"},
+    {q: "يؤدي النشاط التعديني إلى انبعاثات غاز ثاني أكسيد الكربون مما يسبب التغير المناخي.", opts: ["صواب ✔", "خطأ ✘"], ans: 0, fb: "صواب"},
+    {q: "يتركز معظم إنتاج البوكسيت في العالم في المناطق القطبية الباردة.", opts: ["صواب ✔", "خطأ ✘"], ans: 1, fb: "خطأ - التصحيح: المناطق المدارية"},
+    {q: "تُعد روسيا من الدول الأوروبية الغنية بالموارد المعدنية مثل الحديد والنحاس.", opts: ["صواب ✔", "خطأ ✘"], ans: 0, fb: "صواب"},
+    {q: "تنتج قارة آسيا نحو نصف الإنتاج العالمي من الفحم.", opts: ["صواب ✔", "خطأ ✘"], ans: 0, fb: "صواب"},
+    {q: "يُستخدم التيتانيوم في صناعة هياكل الطائرات والصواريخ لخفته وصلابته.", opts: ["صواب ✔", "خطأ ✘"], ans: 0, fb: "صواب"},
+    {q: "تعد بريطانيا وفرنسا من الدول الأوروبية التي استنزفت مواردها المعدنية قديماً.", opts: ["صواب ✔", "خطأ ✘"], ans: 0, fb: "صواب"},
+
+    // ثانياً: 11 سؤال بم تفسر
+    {q: "بم تفسر: ارتفاع إنتاج قارة آسيا من المعادن الخام عن قارة أوروبا يرجع إلى:", opts: ["(أ) قلة الاستهلاك", "(ب) اتساع مساحتها وتنوع صخورها", "(ج) اعتدال مناخها", "(د) سهولة النقل"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "بم تفسر: يُعد الغاز الطبيعي منافساً قوياً للبترول في آسيا وأوروبا بسبب:", opts: ["(أ) ندرة وجوده", "(ب) رخص ثمنه وقلة تلوثه للبيئة", "(ج) صعوبة استخراجه", "(د) ثقل وزنه"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "بم تفسر: الأهمية الكبرى لمعدن التيتانيوم في الصناعات المتطورة تعود إلى:", opts: ["(أ) ثمنه الرخيص", "(ب) تميزه بخفة وزنه وصلابته العالية", "(ج) توفره في القارة القطبية", "(د) قابليته للصدأ"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "بم تفسر: سُميت 'المواد الخام الحرجة' بهذا الاسم لأنها:", opts: ["(أ) متوفرة بكثرة", "(ب) محدودة الوجود ومهمة اقتصادياً", "(ج) رخيصة جداً", "(د) غير قابلة للتدوير"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "بم تفسر: تواجه دول غرب أوروبا (فرنسا وبريطانيا) مشكلة نقص المعادن نتيجة:", opts: ["(أ) ضيق المساحة", "(ب) الاستخدام غير المستدام وطول فترة الاستخراج", "(ج) نقص التكنولوجيا", "(د) تجمد التربة"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "بم تفسر: للمنجنيز أهمية اقتصادية كبرى في الصين وأوكرانيا لدخوله في صناعة:", opts: ["(أ) الحلي", "(ب) الصلب وبطاريات السيارات الكهربائية", "(ج) الورق", "(د) المنسوجات"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "بم تفسر: يعد النيكل من المواد الخام الحرجة لاستخدامه في صناعة:", opts: ["(أ) الطوب الحراري", "(ب) محركات الطائرات وبطاريات السيارات", "(ج) الأسلاك الكهربائية", "(د) الأسمدة"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "بم تفسر: تفوق الصين في إنتاج الطاقة الكهرومائية عالمياً يرجع إلى:", opts: ["(أ) جفاف مناخها", "(ب) كثرة الأمطار والأنهار بها", "(ج) ندرة التكنولوجيا", "(د) صغر مساحة القارة"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "بم تفسر: اهتمام دول العالم حالياً بالتحول نحو الطاقة المتجددة لأنها:", opts: ["(أ) مكلفة جداً", "(ب) نظيفة وغير قابلة للنفاد", "(ج) تلوث البيئة", "(د) صعبة النقل"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "بم تفسر: الأهمية الاقتصادية لمعدن البوكسيت تكمن في كونه:", opts: ["(أ) يستخدم كوقود", "(ب) الخام الأساسي لصناعة الألومنيوم", "(ج) مادة بناء أساسية", "(د) يستخدم في الحلي"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "بم تفسر: تفوق الصين في إنتاج طاقة الرياح عالمياً يرجع إلى:", opts: ["(أ) قلة السكان", "(ب) التقدم التكنولوجي وتوافر الإمكانات", "(ج) صغر المساحة", "(د) الاعتماد على الفحم فقط"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+
+    // ثالثاً: 11 سؤال ما النتائج المترتبة على
+    {q: "ما نتائج: زيادة الاعتماد على الطاقة المتجددة (الشمس والرياح) تؤدي لـ:", opts: ["(أ) زيادة الاحتباس الحراري", "(ب) انخفاض انبعاثات الكربون", "(ج) نفاد الموارد", "(د) تلوث المياه"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ما نتائج: استهلاك الصين كميات ضخمة من الحديد محلياً أدى لـ:", opts: ["(أ) تصديره للخارج", "(ب) استيراد كميات كبيرة لتغطية حاجتها", "(ج) التوقف عن الإنتاج", "(د) رخص ثمنه"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ما نتائج: طول فترة استخراج المعادن في دول غرب أوروبا نتج عنه:", opts: ["(أ) زيادة الإنتاج", "(ب) استنزاف ونفاد الكثير من الخامات", "(ج) اكتشاف مناجم جديدة", "(د) رخص الأيدي العاملة"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ما نتائج: Activity التعديني المكثف وانبعاث غاز ثاني أكسيد الكربون أدى لـ:", opts: ["(أ) ثبات المناخ", "(ب) حدوث التغيرات المناخية", "(ج) زيادة الأمطار", "(د) انخفاض حرارة الأرض"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ما نتائج: وقوع معظم إنتاج البوكسيت في المناطق المدارية أدى لـ:", opts: ["(أ) زيادته بأوروبا", "(ب) قلة إنتاجه في قارة أوروبا", "(ج) رخص ثمنه", "(د) تجمد المناجم"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ما نتائج: توافر كميات ضخمة من الفحم في قارة آسيا أدى لـ:", opts: ["(أ) استيراده من الخارج", "(ب) احتلالها المرتبة الأولى عالمياً في إنتاجه", "(ج) عدم الحاجة للصناعة", "(د) استبداله كلياً بالشمس"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ما نتائج: التقدم التكنولوجي الكبير في ألمانيا ودول أوروبا أدى لـ:", opts: ["(أ) قلة الإنتاج", "(ب) التوسع في إنتاج طاقة الرياح والشمس", "(ج) زيادة التلوث", "(د) ترك الموارد"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ما نتائج: تعرض مساحات كبيرة من آسيا لتحركات باطنية قوية أدى لـ:", opts: ["(أ) استواء السطح", "(ب) ارتفاع وتنوع إنتاج المعادن الخام بها", "(ج) جفاف الأنهار", "(د) قلة الموارد"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ما نتائج: تمتع الغاز الطبيعي بمميزات بيئية واقتصادية أدى لـ:", opts: ["(أ) إهمال استخدامه", "(ب) أصبح منافساً قوياً للبترول عالمياً", "(ج) ارتفاع سعره", "(د) تلوث الهواء"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ما نتائج: امتلاك الصين ثروات معدنية ضخمة ومتنوعة نتج عنه:", opts: ["(أ) فقرها اقتصادياً", "(ب) ريادتها العالمية في معظم الصناعات المعدنية", "(ج) حاجتها للاستيراد فقط", "(د) قلة التكنولوجيا"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ما نتائج: إصدار الاتحاد الأوروبي 'قانون المواد الخام الحرجة' يهدف لـ:", opts: ["(أ) منع التعدين", "(ب) ضمان استدامة الموارد للأجيال القادمة", "(ج) زيادة التلوث", "(د) تقليل التدوير"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+
+    // رابعاً: 5 أسئلة ما المقصود
+    {q: "ما المقصود بـ: 'مواد خام محدودة الوجود ذات أهمية اقتصادية تدخل في إنتاج الطاقة النظيفة':", opts: ["(أ) وقود حفري", "(ب) معادن ثقيلة", "(ج) مواد خام حرجة", "(د) صخور رسوبية"], ans: 2, fb: "الإجابة الصحيحة: (ج)"},
+    {q: "ما المقصود بـ: 'استخدام أساليب تعدين حديثة وصديقة للبيئة لتقليل التلوث والاستهلاك الأمثل':", opts: ["(أ) تعدين سطحي", "(ب) مناجم خضراء", "(ج) تدوير معادن", "(د) تعدين جوفي"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ما المقصود بـ: 'الخام الأساسي والوحيد الذي يُصنع منه معدن الألومنيوم':", opts: ["(أ) المنجنيز", "(ب) الكروم", "(ج) البوكسيت", "(د) النيكل"], ans: 2, fb: "الإجابة الصحيحة: (ج)"},
+    {q: "ما المقصود بـ: 'معدن استراتيجي مشع يُستخدم في الصناعات والعلوم النووية':", opts: ["(أ) التيتانيوم", "(ب) اليورانيوم", "(ج) النحاس", "(د) البوكسيت"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ما المقصود بـ: 'الكهرباء الناتجة من استخدام حركة المياه في الشلالات والسدود والأنهار':", opts: ["(أ) طاقة شمسية", "(ب) طاقة رياح", "(ج) طاقة كهرومائية", "(د) طاقة نووية"], ans: 2, fb: "الإجابة الصحيحة: (ج)"},
+
+    // خامساً: 12 سؤال أكمل الفراغ
+    {q: "تعد دولة ........ أولى دول آسيا والعالم في إنتاج اليورانيوم.", opts: ["(أ) الصين", "(ب) كازاخستان", "(ج) الهند", "(د) روسيا"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "يأتي معظم إنتاج أوروبا من الحديد من دولة ........", opts: ["(أ) النرويج", "(ب) روسيا", "(ج) ألمانيا", "(د) فرنسا"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "أولى دول أوروبا في إنتاج الغاز الطبيعي هي دولة ........", opts: ["(أ) روسيا", "(ب) النرويج", "(ج) ألمانيا", "(د) إسبانيا"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "تتصدر دولة ........ قارة آسيا في إنتاج البترول.", opts: ["(أ) إيران", "(ب) السعودية", "(ج) الصين", "(د) العراق"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "ظل ........ المصدر الرئيسي للطاقة في العالم حتى بداية القرن الماضي.", opts: ["(أ) البترول", "(ب) الفحم", "(ج) الغاز الطبيعي", "(د) الكهرباء"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "تعد دولة ........ أولى دول أوروبا في إنتاج معدن الكروم.", opts: ["(أ) روسيا", "(ب) فنلندا", "(ج) النرويج", "(د) أوكرانيا"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "تحتل دولة ........ المركز الأول في آسيا والعالم في إنتاج النيكل.", opts: ["(أ) الصين", "(ب) إندونيسيا", "(ج) الهند", "(د) اليابان"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "يُستخدم معدن ........ بشكل أساسي في صناعة الأسلاك الكهربائية.", opts: ["(أ) الحديد", "(ب) النحاس", "(ج) الكروم", "(د) المنجنيز"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "يدخل معدن النيكل في صناعة محركات الطائرات وبطاريات ........", opts: ["(أ) الساعات", "(ب) السيارات الكهربائية", "(ج) الهواتف", "(د) الغواصات"], ans: 1, fb: "الإجابة الصحيحة: (ب)"},
+    {q: "تنتج قارة آسيا نحو ........ إنتاج العالم من الفحم.", opts: ["(أ) ربع", "(ب) ثلث", "(ج) نصف", "(د) ثلثي"], ans: 2, fb: "الإجابة الصحيحة: (ج)"},
+    {q: "تعد دولة ........ أولى دول أوروبا في إنتاج طاقة الرياح والطاقة الشمسية.", opts: ["(أ) روسيا", "(ب) فرنسا", "(ج) ألمانيا", "(د) النرويج"], ans: 2, fb: "الإجابة الصحيحة: (ج)"},
+    {q: "يُستخدم معدن ........ في صناعة هياكل الطائرات لصلابته وخفته.", opts: ["(أ) الحديد", "(ب) التيتانيوم", "(ج) النحاس", "(د) الكروم"], ans: 1, fb: "الإجابة الصحيحة: (ب)"}
+];
+
+document.getElementById('startBtn').onclick = function() {
+    uName = document.getElementById('uName').value;
+    if(uName.trim().length < 5) return alert("يرجى كتابة الاسم الثلاثي المعتمد للمشاركة في لوحة الشرف");
+    
+    sCor.play().then(() => { sCor.pause(); sCor.currentTime = 0; });
+    sErr.play().then(() => { sErr.pause(); sErr.currentTime = 0; });
+    vCor.play().then(() => { vCor.pause(); vCor.currentTime = 0; });
+    vErr.play().then(() => { vErr.pause(); vErr.currentTime = 0; });
+
+    startTime = Date.now();
+    document.getElementById('scr-1').classList.remove('active-screen');
+    document.getElementById('scr-2').classList.add('active-screen');
+    document.getElementById('stagesNav').style.display = 'flex'; 
+    loadQ();
+};
+
+function loadQ() {
+    const q = quiz[cur];
+    document.getElementById('qText').innerText = q.q;
+    document.getElementById('q-count').innerText = "السؤال: " + (cur+1) + " / " + quiz.length;
+    document.getElementById('feedback').style.display = 'none';
+    
+    let currentStageIdx = stageBoundaries.findIndex(limit => cur < limit);
+    document.querySelectorAll('.stage-item').forEach((item, idx) => {
+        item.classList.remove('current', 'done');
+        if (idx === currentStageIdx) item.classList.add('current');
+        else if (idx < currentStageIdx) item.classList.add('done');
+    });
+
+    const optsDiv = document.getElementById('options');
+    optsDiv.innerHTML = "";
+    q.opts.forEach((o, i) => {
+        const b = document.createElement('button');
+        b.className = 'btn-opt'; 
+        b.innerText = o;
+        b.onclick = () => check(i, b);
+        optsDiv.appendChild(b);
+    });
+}
+
+function check(idx, b) {
+    const q = quiz[cur];
+    const allButtons = document.querySelectorAll('.btn-opt');
+    allButtons.forEach(btn => btn.onclick = null);
+    
+    if(idx === q.ans) {
+        score++; 
+        b.classList.add('correct');
+        sCor.play(); 
+        setTimeout(() => { vCor.play(); }, 250); 
+    } else {
+        b.classList.add('wrong');
+        allButtons[q.ans].classList.add('correct'); 
+        sErr.play(); 
+        setTimeout(() => { vErr.play(); }, 250);
+    }
+    document.getElementById('feedback').innerText = "💡 تأكيد علمي: " + q.fb;
+    document.getElementById('feedback').style.display = 'block';
+    document.getElementById('s-val').innerText = "النقاط: " + score;
+    setTimeout(() => { cur++; if(cur < quiz.length) loadQ(); else finish(); }, 3500);
+}
+
+function finish() {
+    const durationSeconds = Math.floor((Date.now() - startTime) / 1000);
+    const percentage = (score / quiz.length) * 100;
+    let feedbackMsg = "", feedbackColor = "";
+
+    if (percentage >= 90) {
+        feedbackMsg = "أداء أسطوري مذهل! أنت عبقري في جغرافيا المعادن ومصادر الطاقة، فخور بك جداً! ⚡🏆";
+        feedbackColor = "#059669";
+    } else if (percentage >= 75) {
+        feedbackMsg = "ممتاز جداً يا بطل! استيعابك للمواد الخام والتحولات الاقتصادية ممتاز، خطوة للدرجة النهائية. 🌟";
+        feedbackColor = "#1e3a8a";
+    } else if (percentage >= 50) {
+        feedbackMsg = "أداء جيد، لقد نجحت في التحدي! أنصحك بمراجعة المواد الخام الحرجة وأولى الدول لرفع درجتك. 💪";
+        feedbackColor = "#d97706";
+    } else {
+        feedbackMsg = "لا بأس، الدرس مليء بالتفاصيل الهامة. راجع بنك الأسئلة جيداً وحاول مرة أخرى! 🚩";
+        feedbackColor = "#dc2626";
+    }
+
+    document.getElementById('stagesNav').style.display = 'none';
+    document.getElementById('scr-2').classList.remove('active-screen');
+    document.getElementById('scr-3').classList.add('active-screen');
+    document.getElementById('fName').innerText = uName;
+    document.getElementById('fScore').innerText = score + " / " + quiz.length;
+    document.getElementById('motivationMsg').innerHTML = `<div style="color:${feedbackColor}; margin:15px 0; font-size:22px; border:3px solid ${feedbackColor}; padding:15px; border-radius:15px; font-weight:bold;">${feedbackMsg}</div>`;
+    
+    const lessonName = "المعادن ومصادر الطاقة في قارتي آسيا وأوروبا";
+    const finalUrl = SCRIPT_URL + "?name=" + encodeURIComponent(uName) + "&score=" + encodeURIComponent(score) + "&duration=" + encodeURIComponent(durationSeconds) + "&lesson=" + encodeURIComponent(lessonName);
+    
+    const sender = new Image();
+    sender.src = finalUrl;
+    sender.onload = sender.onerror = () => document.getElementById('sendingMsg').innerText = "✅ تم حفظ نتيجتك بنجاح في لوحة شرف أ. سعيد شعبان!";
+}
+</script>
+</body>
+</html>
